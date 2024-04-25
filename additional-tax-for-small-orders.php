@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Additional Tax for Small Orders
  * Plugin URI: https://github.com/As-Tomas/Additional-Tax-for-Small-Orders
@@ -8,12 +9,13 @@
  * Author URI: https://github.com/As-Tomas
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-function check_cart_total_add_tax() {
-    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+function check_cart_total_add_tax()
+{
+    if (is_admin() && !defined('DOING_AJAX')) {
         error_log("Exiting due to admin or non-AJAX call.");
         return;
     }
@@ -56,9 +58,6 @@ function check_cart_total_add_tax() {
 add_action('woocommerce_cart_calculate_fees', 'check_cart_total_add_tax', 10, 1);
 
 // Reset the session variable at the start of each new cart session
-add_action('woocommerce_before_cart', function() {
+add_action('woocommerce_before_cart', function () {
     WC()->session->__unset('additional_tax_notice_added');
 });
-
-
-
