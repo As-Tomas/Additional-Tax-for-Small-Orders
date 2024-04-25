@@ -30,7 +30,7 @@ function check_cart_total_add_tax() {
     $fees = WC()->cart->get_fees();
     $tax_added = false;
     foreach ($fees as $fee) {
-        if ($fee->name === 'Additional Tax') {
+        if ($fee->name === 'Småordretillegg') {
             $tax_added = true;
             break;
         }
@@ -39,13 +39,13 @@ function check_cart_total_add_tax() {
     error_log("Tax added flag: " . ($tax_added ? "true" : "false"));
 
     if (!$tax_added && $cart_total < 1000) {
-        WC()->cart->add_fee('Additional Tax', 250);
+        WC()->cart->add_fee('Småordretillegg', 250);
         error_log("Additional tax applied.");
     }
 
     // Use WC session to ensure notice is added only once per session
     if ($cart_total < 1000 && !WC()->session->get('additional_tax_notice_added')) {
-        wc_add_notice('An additional tax of 250kr has been added to your cart because the total cart value is less than 1000kr.', 'notice');
+        wc_add_notice('Handle for 1000 kr eller mer for å slippe småordregebyret.', 'notice');
         WC()->session->set('additional_tax_notice_added', true);
         error_log("Notice added.");
     }
