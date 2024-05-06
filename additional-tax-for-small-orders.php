@@ -41,23 +41,26 @@ function check_cart_total_add_tax()
     error_log("Tax added flag: " . ($tax_added ? "true" : "false"));
 
     if (!$tax_added && $cart_total < 1000) {
-        WC()->cart->add_fee('Småordretillegg', 250);
+        WC()->cart->add_fee('Småordretillegg', 250, true); // true for ensure the fee is taxable (VAT is added to the fee)
         error_log("Additional tax applied.");
+    }    
+}
+
+add_action('woocommerce_before_cart', 'check_cart_total_add_tax');
+
+
+// Add notice in a visual-related hook
+add_action('woocommerce_before_cart', 'add_custom_notice_to_cart');
+
+function add_custom_notice_to_cart() {
+    if (!isset(WC()->cart)) {
+        return;
     }
 
-    // Use WC session to ensure notice is added only once per session
+    $cart_total = WC()->cart->subtotal;
+
     if ($cart_total < 1000 && !WC()->session->get('additional_tax_notice_added')) {
         wc_add_notice('Handle for 1000 kr eller mer for å slippe småordregebyret.', 'notice');
         WC()->session->set('additional_tax_notice_added', true);
-        error_log("Notice added.");
     }
-
-    error_log("Current fees: " . print_r(WC()->cart->get_fees(), true));
 }
-
-add_action('woocommerce_cart_calculate_fees', 'check_cart_total_add_tax', 10, 1);
-
-// Reset the session variable at the start of each new cart session
-add_action('woocommerce_before_cart', function () {
-    WC()->session->__unset('additional_tax_notice_added');
-});

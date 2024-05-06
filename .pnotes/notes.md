@@ -1,2 +1,2 @@
-MVA should be included or not?
+MVA should be included or not? - not it is additional
 Test live server.
